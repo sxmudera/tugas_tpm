@@ -15,13 +15,16 @@ class _State extends State<OperasiScreen> {
   String? _expr;
 
   String _fmt(double v) =>
-      v == v.truncateToDouble() ? v.toInt().toString() : v.toStringAsFixed(2);
+      v == v.truncateToDouble() ? v.toInt().toString() : v.toString();
 
   void _hitung(String op) {
     final a = double.tryParse(_a.text);
     final b = double.tryParse(_b.text);
     if (a == null || b == null) {
-      setState(() { _hasil = 'Input tidak valid'; _expr = null; });
+      setState(() {
+        _hasil = 'Input tidak valid';
+        _expr = null;
+      });
       return;
     }
     final r = op == '+' ? a + b : a - b;
@@ -57,8 +60,10 @@ class _State extends State<OperasiScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   if (_expr != null)
-                    Text(_expr!,
-                        style: const TextStyle(fontSize: 12, color: kHitam)),
+                    Text(
+                      _expr!,
+                      style: const TextStyle(fontSize: 12, color: kHitam),
+                    ),
                   const SizedBox(height: 2),
                   Text(
                     _hasil!,
@@ -77,66 +82,108 @@ class _State extends State<OperasiScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Bilangan A',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kHitam)),
+                const Text(
+                  'Bilangan A',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: kHitam,
+                  ),
+                ),
                 const SizedBox(height: 6),
                 TextField(
                   controller: _a,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^-?\d*\.?\d*'))],
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                    signed: true,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^-?\d*\.?\d*')),
+                  ],
                   textInputAction: TextInputAction.next,
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kHitam),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: kHitam,
+                  ),
                   decoration: const InputDecoration(hintText: '0'),
                 ),
                 const SizedBox(height: 16),
-                const Text('Bilangan B',
-                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kHitam)),
+                const Text(
+                  'Bilangan B',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: kHitam,
+                  ),
+                ),
                 const SizedBox(height: 6),
                 TextField(
                   controller: _b,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true, signed: true),
-                  inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^-?\d*\.?\d*'))],
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                    signed: true,
+                  ),
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'^-?\d*\.?\d*')),
+                  ],
                   textInputAction: TextInputAction.done,
                   onSubmitted: (_) => _hitung('+'),
-                  style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kHitam),
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: kHitam,
+                  ),
                   decoration: const InputDecoration(hintText: '0'),
                 ),
                 const SizedBox(height: 24),
-                Row(children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => _hitung('+'),
-                      child: Container(
-                        height: 52,
-                        decoration: BoxDecoration(
-                          color: kHijau,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text('+',
+                Row(
+                  children: [
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _hitung('+'),
+                        child: Container(
+                          height: 52,
+                          decoration: BoxDecoration(
+                            color: kHijau,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            '+',
                             style: TextStyle(
-                                color: kHitam, fontWeight: FontWeight.w800, fontSize: 20)),
+                              color: kHitam,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => _hitung('-'),
-                      child: Container(
-                        height: 52,
-                        decoration: BoxDecoration(
-                          color: kHitam,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text('−',
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _hitung('-'),
+                        child: Container(
+                          height: 52,
+                          decoration: BoxDecoration(
+                            color: kHitam,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            '−',
                             style: TextStyle(
-                                color: kPutih, fontWeight: FontWeight.w800, fontSize: 20)),
+                              color: kPutih,
+                              fontWeight: FontWeight.w800,
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ]),
+                  ],
+                ),
               ],
             ),
           ),

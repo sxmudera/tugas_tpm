@@ -10,56 +10,80 @@ class PiramidScreen extends StatefulWidget {
 }
 
 class _State extends State<PiramidScreen> {
-  final _a = TextEditingController();
-  final _t = TextEditingController();
+  final _p = TextEditingController(); // Panjang Alas
+  final _l = TextEditingController(); // Lebar Alas
+  final _t = TextEditingController(); // Tinggi
   Map<String, String>? _r;
 
   String _fmt(double v) =>
       v == v.truncateToDouble() ? v.toInt().toString() : v.toStringAsFixed(2);
 
   void _hitung() {
-    final a = double.tryParse(_a.text);
+    final p = double.tryParse(_p.text);
+    final l = double.tryParse(_l.text);
     final t = double.tryParse(_t.text);
-    if (a == null || t == null || a <= 0 || t <= 0) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Masukkan nilai alas dan tinggi yang valid'),
-        backgroundColor: kHitam,
-      ));
+
+    if (p == null || l == null || t == null || p <= 0 || l <= 0 || t <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Masukkan nilai alas, lebar, dan tinggi yang valid'),
+          backgroundColor: kHitam,
+        ),
+      );
       return;
     }
-    final la = a * a;
-    final s  = sqrt(pow(a / 2, 2) + pow(t, 2));
-    final ls = 2 * a * s;
-    setState(() => _r = {
-      'Luas Alas':      '${_fmt(la)} cm²',
-      'Sisi Miring':    '${_fmt(s)} cm',
-      'Luas Selimut':   '${_fmt(ls)} cm²',
-      'Luas Permukaan': '${_fmt(la + ls)} cm²',
-      'Volume':         '${_fmt((1 / 3) * la * t)} cm³',
-    });
+
+    final la = p * l;
+    // Tinggi sisi miring pada sisi panjang dan sisi lebar
+    final sP = sqrt(pow(l / 2, 2) + pow(t, 2));
+    final sL = sqrt(pow(p / 2, 2) + pow(t, 2));
+
+    // Luas selimut = (2 x luas segitiga p) + (2 x luas segitiga l)
+    final ls = (p * sP) + (l * sL);
+
+    setState(
+      () => _r = {
+        'Luas Alas': '${_fmt(la)} cm²',
+        'Luas Selimut': '${_fmt(ls)} cm²',
+        'Luas Permukaan': '${_fmt(la + ls)} cm²',
+        'Volume': '${_fmt((1 / 3) * la * t)} cm³',
+      },
+    );
   }
 
   Widget _field(String label, TextEditingController c) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(label,
-              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: kHitam)),
-          const SizedBox(height: 6),
-          TextField(
-            controller: c,
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*'))],
-            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: kHitam),
-            decoration: const InputDecoration(hintText: '0', suffixText: 'cm'),
-          ),
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(
+        label,
+        style: const TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w600,
+          color: kHitam,
+        ),
+      ),
+      const SizedBox(height: 6),
+      TextField(
+        controller: c,
+        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+        inputFormatters: [
+          FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
         ],
-      );
+        style: const TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: kHitam,
+        ),
+        decoration: const InputDecoration(hintText: '0', suffixText: 'cm'),
+      ),
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Piramid'),
+        title: const Text('Hitung Piramida'),
         bottom: const PreferredSize(
           preferredSize: Size.fromHeight(1),
           child: Divider(height: 1, thickness: 1, color: Color(0xFFEEEEEE)),
@@ -70,7 +94,9 @@ class _State extends State<PiramidScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _field('Panjang Alas (a)', _a),
+            _field('Panjang Alas (p)', _p),
+            const SizedBox(height: 16),
+            _field('Lebar Alas (l)', _l),
             const SizedBox(height: 16),
             _field('Tinggi (t)', _t),
             const SizedBox(height: 24),
@@ -84,31 +110,48 @@ class _State extends State<PiramidScreen> {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 alignment: Alignment.center,
-                child: const Text('Hitung',
-                    style: TextStyle(
-                        color: kHitam, fontWeight: FontWeight.w800, fontSize: 14)),
+                child: const Text(
+                  'Hitung',
+                  style: TextStyle(
+                    color: kHitam,
+                    fontWeight: FontWeight.w800,
+                    fontSize: 14,
+                  ),
+                ),
               ),
             ),
             if (_r != null) ...[
               const SizedBox(height: 32),
-              ..._r!.entries.map((e) => Container(
-                    margin: const EdgeInsets.only(bottom: 8),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFF5F5F5),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(e.key,
-                            style: const TextStyle(fontSize: 13, color: kHitam)),
-                        Text(e.value,
-                            style: const TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w800, color: kHitam)),
-                      ],
-                    ),
-                  )),
+              ..._r!.entries.map(
+                (e) => Container(
+                  margin: const EdgeInsets.only(bottom: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5F5F5),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        e.key,
+                        style: const TextStyle(fontSize: 13, color: kHitam),
+                      ),
+                      Text(
+                        e.value,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                          color: kHitam,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ],
           ],
         ),
