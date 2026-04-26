@@ -1,4 +1,3 @@
-import 'package:app_tugas/screens/umur_screen.dart';
 import 'package:flutter/material.dart';
 import '../app_theme.dart';
 import '../models/user_model.dart';
@@ -12,6 +11,7 @@ import 'penghitung_teks_screen.dart';
 import 'weton_screen.dart';
 import 'hijriah_screen.dart';
 import 'umur_screen.dart';
+import 'hindu_screen.dart';
 
 class HomeScreen extends StatelessWidget {
   final UserModel user;
@@ -29,6 +29,7 @@ class HomeScreen extends StatelessWidget {
       ('Cek Weton Tanggal', const WetonScreen()),
       ('Konversi Hijriah', const HijriahScreen()),
       ('Cek Umur', const UmurDetailScreen()),
+      ('Kalender Hindu', const HinduScreen()),
     ];
 
     return Scaffold(
